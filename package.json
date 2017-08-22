@@ -7,7 +7,8 @@
     "test": "test"
   },
   "dependencies": {
-    "bootstrap": "^4.0.0-alpha.6",
+    "bootstrap": "^4.0.0-beta",
+    "cross-env": "^5.0.5",
     "moment": "^2.18.1"
   },
   "devDependencies": {
