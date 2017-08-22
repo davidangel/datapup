@@ -20,7 +20,7 @@
                 </div>
                 <div class="panel-body">
                   <div class="well" v-if="info.petsafe">
-                    <bar-graph :labels="info.petsafe.Keys" :values="[
+                    <bar-graph :labels="info.petsafe.Keys" ylabel="Reviews" :values="[
                     {
                       data: info.petsafe['Products'],
                       color: '#7DA3A1',
@@ -41,7 +41,7 @@
                 </div>
                 <div class="panel-body">
                   <div class="well" v-if="info.sportdog">
-                    <bar-graph :labels="info.sportdog.Keys" :values="[
+                    <bar-graph :labels="info.sportdog.Keys" ylabel="Reviews" :values="[
                     {
                       data: info.sportdog['Products'],
                       color: '#7DA3A1',
@@ -61,35 +61,18 @@
 </template>
 
 <script>
-import BarGraph from './graphs/BarGraph';
-import Missing from './Missing';
 
-  export default{
-    components: { BarGraph, Missing },
+import ChartAbstract from './ChartAbstract';
+import LineGraph from './graphs/LineGraph'
+import BarGraph from './graphs/BarGraph'
 
+  export default {
+    extends: ChartAbstract,
+    components: { LineGraph, BarGraph},
     data(){
       return {
-        info : {},
-        state: 'fetching',
+        apiRoute: '/charts/feedback_type',
       }
     },
-    created(){
-      this.fetch();
-      Event.$on('refresh', () => this.fetch());
-    },
-
-    methods: {
-      fetch(){
-        axios.get('/charts/feedback_type').then(response =>{
-          if (response.data){
-            this.info = response.data;
-            this.state = 'success';
-          }
-          else{
-            this.state = 'fail';
-          }
-        });
-      }
-    }
   }
 </script>

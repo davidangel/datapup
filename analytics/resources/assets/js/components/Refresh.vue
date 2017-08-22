@@ -24,10 +24,13 @@
     methods: {
       refresh(){
         this.text = 'In Progress...';
-        axios.get('/refresh').then(response => {
+        axios.get('/refresh/').then(response => {
           this.text = 'Update';
           this.updated = response.data;
           Event.$emit('refresh');
+        }).catch(e => {
+          this.text = 'Update';
+          alert('Failed to update data. Please, try again later.');
         });
       }
     },

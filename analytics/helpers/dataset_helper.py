@@ -1,5 +1,5 @@
 import pandas as pd
-from ..models.settings import column_types
+from ..models.dataset_settings import column_types, column_scale
 
 
 def get_entries_after(dataset, start_date, field_name):
@@ -83,7 +83,11 @@ def set_column_types(ds, columns):
         raise Exception('Column(s) are missing from types dictionary')
     for column in columns:
         if column_types[column] == 'bool':
-            bool_conversion = {'True': True, 'False': False, True: True, False: False, 'Yes': True, 'No': False}
+            bool_conversion = {'True': True, 'False': False,
+                               True: True, False: False,
+                               'Yes': True, 'No': False,
+                               1: True, 0: False,
+                               '1': True, '0': False}
             ds[column] = convert_column_values(ds[column], bool_conversion)
         else:
             ds[column] = ds[column].astype(column_types[column])
@@ -119,3 +123,13 @@ def count_average_value_in_row(ds, column_weights):
 
     return ds['Average']
 
+
+def change_column_scale(column):
+    if column.name not in column_scale:
+        raise Exception('Scale settings are missing for the column %s' % column.name)
+
+    settings = column_scale[column.name]
+
+    if 'Default' not in settings:
+        raise Exception('Default value is missing in settings')
+    return column.apply(lambda x: settings[x] if x in settings else settings['Default'])

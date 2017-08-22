@@ -3,8 +3,9 @@
 </template>
 
 <script>
-
+  import GraphAbstract from './GraphAbstract'
   export default{
+    extends: GraphAbstract,
     props: {
       labels: Array,
       values: Array,
@@ -14,6 +15,12 @@
       },
       ymax:{
         required: false
+      },
+      ylabel:{
+        required: false
+      },
+      xlabel:{
+        required: false
       }
     },
     data(){
@@ -22,41 +29,30 @@
     },
     mounted(){
       let self = this;
-      let options = {
-        legend:{
-          display: false
-        }
-      };
-      if (this.yrewrites){
-        options['scales'] = {
-            yAxes: [{
-                    ticks: {
-                        max: Math.max(...Object.keys(self.yrewrites)),
-                        callback: function(value, index, values) {
-                          return (self.yrewrites[value]) ? self.yrewrites[value] : '';
-                        }
-                    }
-                }
-            ]
+
+      let options = this.getChartOptions();
+      if (!options['legend']){
+        options['legend'] = {};
+      }
+      options['legend']['display'] = false;
+
+
+      if (this.yrewrites) {
+        options['scales']['yAxes'][0]['ticks'] = {
+            max: Math.max(...Object.keys(self.yrewrites)),
+            callback: function(value, index, values) {
+              return (self.yrewrites[value]) ? self.yrewrites[value] : '';
+            }
         }
       }
 
       if (this.ymax){
-        options['scales'] = {
-            yAxes: [{
-                    ticks: {
-                        max: this.ymax
-                    }
-                }
-            ]
+        options['scales']['yAxes'][0]['ticks'] = {
+            max: this.ymax
         }
       }
 
-      let chartData = {
-          labels: this.labels,
-          datasets: [],
-      };
-
+      let chartData = this.getChartData();
       this.values.forEach((value, index, array) => {
         chartData.datasets.push({
           data: value ? value : [],
@@ -64,7 +60,7 @@
           borderColor: 'rgba(34, 34, 17, .5)',
         });
       });
-      new Chart.Line(this.$refs.canvas.getContext('2d'), {data: chartData, options: options});
-    }
+      new Chart.Line(this.getContext(), {data: chartData, options: options});
+    },
   }
 </script>

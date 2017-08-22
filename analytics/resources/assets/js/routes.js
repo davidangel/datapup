@@ -6,25 +6,34 @@ let routes = [
         component : require('./components/Summary')
     },
     {
-        path: '/finished_survey',
+        path: '/charts/finished_survey',
         component : require('./components/FinishedSurvey')
     },
     {
-        path: '/feedback_type',
+        path: '/charts/feedback_type',
         component : require('./components/FeedbackType')
     },
     {
-        path: '/completed_survey',
+        path: '/charts/completed_survey',
         component : require('./components/CompletedPurpose')
     },
     {
-        path: '/website_rating',
+        path: '/charts/website_rating',
         component : require('./components/WebsiteRating')
     },
     {
-        path: '/product_rating',
+        path: '/charts/product_rating',
         component : require('./components/ProductRating')
     },
+    {
+        path: '/responses/:name',
+        component : require('./components/SurveyResponses'),
+    },
+    {
+        path: '/responses/:name/:id',
+        component : require('./components/SurveyResponseView'),
+    },
+
 ];
 
 export default new VueRouter({

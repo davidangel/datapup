@@ -3,34 +3,25 @@
 </template>
 
 <script>
-
+  import GraphAbstract from './GraphAbstract'
   export default{
+    extends: GraphAbstract,
     props: {
-      labels: Array,
-      values: Array,
-      ystack: {
+      stacked: {
         type: Boolean,
         default: false,
-      }
+      },
     },
 
     data(){
-      return {
-      }
+      return {}
     },
     mounted(){
-      let options = {
-        scales: {
-            yAxes: [{
-                stacked: this.ystack
-            }],
-        }
-      };
-      let context = this.$refs.canvas.getContext('2d');
-      var chartData = {
-          labels: this.labels,
-          datasets: []
-      };
+      let options = this.getChartOptions();
+      options['scales']['yAxes'][0]['stacked'] = this.stacked;
+      options['scales']['xAxes'][0]['stacked'] = this.stacked;
+
+      let chartData = this.getChartData();
 
       this.values.forEach((values, index, array) => {
         let dataset = {
@@ -45,7 +36,7 @@
         chartData.datasets.push(dataset);
       });
 
-      new Chart(context, {
+      new Chart(this.getContext(), {
         type: 'bar',
         data: chartData,
         options: options,

@@ -1,47 +1,19 @@
-from ..models.summary import get_summary
-from ..models.trends import get_finished, get_completed, get_feedback_types, get_website_rating, get_product_rating
-from flask import jsonify
-from .. import db
-from ..helpers.datetime_helper import get_timestamp
+from ..models import dataset_operations
+from analytics.config import Config
+from .stats import get_summary, get_finished, get_completed, get_feedback_types, get_website_rating, get_product_rating
+from ..services import db_operations, qualtrics_api
+
 
 def refresh_all():
-    db.analytics.delete_many({})
-    db.analytics.insert_one({'type': 'summary', 'data': {
-        'petsafe': get_summary('petsafe'),
-        'sportdog': get_summary('sportdog'),
-    }})
-    db.analytics.insert_one({'type': 'finished', 'data': {
-        'petsafe': get_finished('petsafe'),
-        'sportdog': get_finished('sportdog'),
-    }})
-    db.analytics.insert_one({'type': 'completed', 'data': {
-        'petsafe': get_completed('petsafe'),
-        'sportdog': get_completed('sportdog'),
-    }})
-    db.analytics.insert_one({'type': 'feedback_types', 'data': {
-        'petsafe': get_feedback_types('petsafe'),
-        'sportdog': get_feedback_types('sportdog'),
-    }})
-    db.analytics.insert_one({'type': 'website_rating', 'data': {
-        'petsafe': get_website_rating('petsafe'),
-        'sportdog': get_website_rating('sportdog'),
-    }})
-    db.analytics.insert_one({'type': 'product_rating', 'data': {
-        'petsafe': get_product_rating('petsafe'),
-        'sportdog': get_product_rating('sportdog'),
-    }})
-    timestamp = get_timestamp()
-    db.analytics.insert_one({'type': 'timestamp', 'data': timestamp})
-    return str(timestamp)
+    qualtrics_api.import_surveys()
+    dataset_operations.save_survey_entries()
+    db_operations.remove_analytics()
+    db_operations.insert_analytics([
+        {'type': 'summary', 'data': get_summary([Config.PETSAFE_APP, Config.SPORTDOG_APP])},
+        {'type': 'finished', 'data': get_finished([Config.PETSAFE_APP, Config.SPORTDOG_APP])},
+        {'type': 'completed', 'data': get_completed([Config.PETSAFE_APP, Config.SPORTDOG_APP])},
+        {'type': 'feedback_types', 'data': get_feedback_types([Config.PETSAFE_APP, Config.SPORTDOG_APP])},
+        {'type': 'website_rating', 'data': get_website_rating([Config.PETSAFE_APP, Config.SPORTDOG_APP])},
+        {'type': 'product_rating', 'data': get_product_rating([Config.PETSAFE_APP, Config.SPORTDOG_APP])}])
+    return str(db_operations.update_timestamp('updated_analytics'))
 
-
-def get_data(key):
-    entry = db.analytics.find_one({'type': key})
-    if not entry:
-        return ''
-    else:
-        return jsonify(entry['data'])
-
-
-def get_update_timestamp():
-    return get_data('timestamp')

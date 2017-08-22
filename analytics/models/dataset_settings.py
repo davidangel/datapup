@@ -1,19 +1,20 @@
 from analytics.config import Config
 
 file_names = {
-    'petsafe': {
-        'voc': 'data/PetSafeVOCSurvey.csv',
-        'cc': 'data/PetSafeFeedbackCommentCard.csv'
+    Config.PETSAFE_APP: {
+        Config.VOC_SURVEY: 'data/PetSafe VOC Survey - Main.csv',
+        Config.COMMENT_CARD_SURVEY: 'data/PetSafe Feedback Comment Card.csv'
     },
-    'sportdog': {
-        'voc': 'data/SportDOGVOCSurvey.csv',
-        'cc': 'data/SportDOGFeedbackCommentCard.csv'
+    Config.SPORTDOG_APP: {
+        Config.VOC_SURVEY: 'data/SportDOG VOC Survey - Main.csv',
+        Config.COMMENT_CARD_SURVEY: 'data/SportDOG Feedback Comment Card.csv'
     }
 }
 
 column_rename = {
     Config.PETSAFE_APP: {
         Config.VOC_SURVEY: {
+            'ResponseID': 'ResponseID',
             'StartDate': 'StartDate',
             'EndDate': 'EndDate',
             'Progress': 'Progress',
@@ -37,6 +38,7 @@ column_rename = {
             'Referer': 'Referrer',
         },
         Config.COMMENT_CARD_SURVEY: {
+            'ResponseID': 'ResponseID',
             'StartDate': 'StartDate',
             'EndDate': 'EndDate',
             'Progress': 'Progress',
@@ -61,6 +63,7 @@ column_rename = {
     },
     Config.SPORTDOG_APP: {
         Config.VOC_SURVEY: {
+            'ResponseID': 'ResponseID',
             'StartDate': 'StartDate',
             'EndDate': 'EndDate',
             'Progress': 'Progress',
@@ -84,6 +87,7 @@ column_rename = {
             'Referer': 'Referrer',
         },
         Config.COMMENT_CARD_SURVEY: {
+            'ResponseID': 'ResponseID',
             'StartDate': 'StartDate',
             'EndDate': 'EndDate',
             'Progress': 'Progress',
@@ -107,6 +111,7 @@ column_rename = {
 }
 
 column_types = {
+    'ResponseID': 'object',
     'StartDate': 'datetime64',
     'EndDate': 'datetime64',
     'Progress': 'int64',

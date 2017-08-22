@@ -22,14 +22,18 @@
                   <div class="row">
                       <div class="col-lg-12">
                         <div class="well" v-if="info.petsafe">
-                          <line-graph :labels="info.petsafe.Keys" :values="[info.petsafe.Proportion]"></line-graph>
+                          <line-graph
+                          :labels="info.petsafe.Keys"
+                          :values="[info.petsafe.Proportion]"
+                          :ymax="100"
+                          ylabel="Reviews, %"></line-graph>
                         </div>
                       </div>
                   </div>
                   <div class="row">
                       <div class="col-lg-12">
                         <div class="well" v-if="info.petsafe">
-                          <bar-graph :ystack="true" :labels="info.petsafe.Keys" :values="[
+                          <bar-graph :stacked="true" :labels="info.petsafe.Keys" ylabel="Reviews" :values="[
                           {
                             data: info.petsafe.Finished,
                             color: '#3498db',
@@ -54,14 +58,18 @@
                   <div class="row">
                       <div class="col-lg-12">
                         <div class="well" v-if="info.sportdog">
-                          <line-graph :labels="info.sportdog.Keys" :values="[info.sportdog.Proportion]"></line-graph>
+                          <line-graph
+                          :labels="info.sportdog.Keys"
+                          :values="[info.sportdog.Proportion]"
+                          :ymax="100"
+                          ylabel="Reviews, %"></line-graph>
                         </div>
                       </div>
                       </div>
                       <div class="row">
                       <div class="col-lg-12">
                         <div class="well" v-if="info.sportdog">
-                          <bar-graph :ystack="true" :labels="info.sportdog.Keys" :values="[
+                          <bar-graph :stacked="true" :labels="info.sportdog.Keys" ylabel="Reviews" :values="[
                           {
                             data: info.sportdog.Finished,
                             color: '#3498db',
@@ -84,36 +92,17 @@
 
 <script>
 
+import ChartAbstract from './ChartAbstract';
 import LineGraph from './graphs/LineGraph'
 import BarGraph from './graphs/BarGraph'
-import Missing from './Missing';
 
-  export default{
-    components: { LineGraph, BarGraph, Missing },
-
+  export default {
+    extends: ChartAbstract,
+    components: { LineGraph, BarGraph},
     data(){
       return {
-        info : {},
-        state: 'fetching',
+        apiRoute: '/charts/finished',
       }
     },
-    created(){
-      this.fetch();
-      Event.$on('refresh', () => this.fetch());
-    },
-
-    methods: {
-      fetch(){
-        axios.get('/charts/finished').then(response =>{
-          if (response.data){
-            this.info = response.data;
-            this.state = 'success';
-          }
-          else{
-            this.state = 'fail';
-          }
-        });
-      }
-    }
   }
 </script>
